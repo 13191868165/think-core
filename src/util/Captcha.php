@@ -1,14 +1,14 @@
 <?php
-namespace core\util;
+namespace app\core\util;
 
 use Exception;
 use think\Config;
 use think\Cache;
 
 /**
- * 验证码api
- * Class CaptchaApi
- * @package core\util
+ * 验证码
+ * Class Captcha
+ * @package app\core\util
  */
 class Captcha
 {

@@ -1,5 +1,5 @@
 <?php
-namespace core\model;
+namespace app\core\model;
 
 use think\facade\Db;
 
