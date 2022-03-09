@@ -1,26 +1,44 @@
 <?php
-//
-///**
-// * 使用pre标签打印
-// */
-//function print_pre()
-//{
-//    $args = func_get_args();
-//    foreach ($args as $arg) {
-//        echo '<pre>' . print_r($arg, true) . '</pre>';
-//    }
+
+/**
+ * 使用pre标签打印
+ */
+function print_pre()
+{
+    $args = func_get_args();
+    foreach ($args as $arg) {
+        echo '<pre>' . print_r($arg, true) . '</pre>';
+    }
+}
+
+/**
+ * print_pre 别名
+ */
+if (!function_exists('debug')) {
+    function debug()
+    {
+        call_user_func_array('print_pre', func_get_args());
+    }
+}
+
+function error()
+{
+    ;
+}
+
+//function middleware($name) {
+//    die('middleware');
 //}
-//
-///**
-// * print_pre 别名
-// */
-//if (!function_exists('debug')) {
-//    function debug()
-//    {
-//        call_user_func_array('print_pre', func_get_args());
-//    }
-//}
-//
+
+//m model
+//u util
+//f facade
+//c config
+//error 系统错误(throw_exception alias)
+//show_json
+//throw_exception 抛出异常
+
+
 ////m model
 ////u util
 ////f facade

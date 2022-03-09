@@ -1,19 +1,16 @@
 <?php
 declare (strict_types=1);
-
 namespace core\middleware;
 
-
 /**
- * 签名验证
+ * 验签
  * Class CheckSign
- * @package app\middleware
+ * @package core\middleware
  */
 class CheckSign
 {
     public function handle($request, \Closure $next)
     {
-
         $response = $next($request);
 
         //校验路由是否合法
