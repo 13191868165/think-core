@@ -16,7 +16,7 @@ class CheckSign
         //校验路由是否合法
         $controller = explode('.', $request->controller());
         if (count($controller) != 2) {
-            throw new \app\MyException(10002);
+            throw_exception(10002);
         }
 
         $site = $controller[0];
@@ -30,24 +30,24 @@ class CheckSign
 
         //检查令牌是否存在
         if (empty($appid)) {
-            throw new \app\MyException(10100);
+            throw_exception(10100);
         }
 
         //校验令牌是否合法
         $app = m('app')->getRow(['appid' => $appid]);
         if (empty($app) || $app['is_enabled'] == 0) {
-            throw new \app\MyException(10101);
+            throw_exception(10101);
         }
 
         if (empty($app['secret'])) {
-            throw new \app\MyException(10103);
+            throw_exception(10103);
         }
 
         if (intval($app[$site]) != 1) {
-            throw new \app\MyException(10101);
+            throw_exception(10101);
         }
         if ($site != 'admin' && $site != 'api') {
-            throw new \app\MyException(10102);
+            throw_exception(10102);
         }
 
         //登录白名单
@@ -65,12 +65,12 @@ class CheckSign
         $devSign = $dev['mode'] == true ? get_sign($param, $app['secret']) : '';
         $sign = $request->param('sign', $devSign);
         if (empty($sign)) {
-            throw new \app\MyException(10104);
+            throw_exception(10104);
         }
         unset($param['sign']);
 
         if (get_sign($param, $app['secret']) != $sign) {
-            throw new \app\MyException(10104);
+            throw_exception(10104);
         }
 
         return $response;

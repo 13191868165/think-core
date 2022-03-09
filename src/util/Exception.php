@@ -6,7 +6,7 @@ use Throwable;
 
 /**
  * 自定义异常
- * Class MyException
+ * Class Exception
  * @package app
  */
 class Exception extends \RuntimeException

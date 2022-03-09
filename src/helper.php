@@ -27,7 +27,7 @@ if (!function_exists('debug')) {
  * @param string $message
  * @param Throwable|null $previous
  */
-function error($code, $message = "", Throwable $previous = null)
+function throw_exception($code, $message = "", Throwable $previous = null)
 {
     throw new \core\util\Exception($message, $code, $previous);
 }
@@ -47,11 +47,27 @@ function config($name = '', $value = null)
     return 0 === strpos($name, '?') ? \core\util\Config::has(substr($name, 1)) : \core\util\Config::get($name, $value);
 }
 
+/**
+ * 请求返回数据
+ * @param $code
+ * @param string $msg
+ * @param array $data
+ * @return \think\response\Json
+ */
+function show_json($code, $msg = '', $data = [])
+{
+    if (empty($msg) && $code >= 10000) {
+        $msg = isset(get_config('error')[$code]) ? get_config('error')[$code] : '';
+    }
+    return json(['code' => $code, 'data' => $data, 'msg' => $msg]);
+}
+
+
+
 //m model
 //u util
 //f facade
 //c config
-//show_json
 
 
 ////m model
@@ -115,20 +131,7 @@ function config($name = '', $value = null)
 //    return $_modules[$name];
 //}
 //
-///**
-// * 请求返回数据
-// * @param $code
-// * @param string $msg
-// * @param array $data
-// * @return \think\response\Json
-// */
-//function show_json($code, $msg = '', $data = [])
-//{
-//    if (empty($msg) && $code >= 10000) {
-//        $msg = isset(get_config('error')[$code]) ? get_config('error')[$code] : '';
-//    }
-//    return json(['code' => $code, 'data' => $data, 'msg' => $msg]);
-//}
+
 //
 ///**
 // * 创建hash加密串
