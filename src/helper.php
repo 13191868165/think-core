@@ -107,20 +107,24 @@ function m()
     return $_modules[$name];
 }
 
+/**
+ * 表名
+ * @param $name
+ * @param bool $usePrefix
+ * @return string
+ */
+function table($name, $usePrefix = true)
+{
+    return $usePrefix ? config('database.connections.mysql.prefix') . $name : $name;
+}
 
 
 //u util
 //f facade
 //c config
-
-
-////m model
-////u util
-////f facade
-////c config
-////error 系统错误(throw_exception alias)
-////show_json
-////throw_exception 抛出异常
+//u util
+//f facade
+//c config
 //
 ///**
 // * 是否为空
@@ -136,19 +140,6 @@ function m()
 //    }
 //}
 //
-///**
-// * 表名
-// * @param $name
-// * @param bool $usePrefix
-// * @return string
-// */
-//function table($name, $usePrefix = true)
-//{
-//    return $usePrefix ? config('database.connections.mysql.prefix') . $name : $name;
-//}
-//
-
-
 //
 ///**
 // * 创建hash加密串

@@ -3,6 +3,8 @@ declare (strict_types=1);
 
 namespace core\middleware;
 
+use think\helper\Str;
+
 /**
  * 验签
  * Class CheckSign
@@ -63,7 +65,8 @@ class CheckSign
         unset($param['controller']);
 
         //开发调试模式
-        $devSign = $dev['mode'] == true ? get_sign($param, $app['secret']) : '';
+        debug(Str::sign($param, $app['secret']));exit;
+        $devSign = $dev['mode'] == true ? Str::sign($param, $app['secret']) : '';
         $sign = $request->param('sign', $devSign);
         if (empty($sign)) {
             throw_exception(10104);
