@@ -21,22 +21,37 @@ if (!function_exists('debug')) {
     }
 }
 
-function error()
+/**
+ * 系统错误(抛出异常)
+ * @param $code
+ * @param string $message
+ * @param Throwable|null $previous
+ */
+function error($code, $message = "", Throwable $previous = null)
 {
-    ;
+    throw new \core\util\Exception($message, $code, $previous);
 }
 
-//function middleware($name) {
-//    die('middleware');
-//}
+/**
+ * 获取和设置配置参数
+ * @param string|array $name 参数名
+ * @param mixed $value 参数值
+ * @return mixed
+ */
+function config($name = '', $value = null)
+{
+    if (is_array($name)) {
+        return \core\util\Config::set($name, $value);
+    }
+
+    return 0 === strpos($name, '?') ? \core\util\Config::has(substr($name, 1)) : \core\util\Config::get($name, $value);
+}
 
 //m model
 //u util
 //f facade
 //c config
-//error 系统错误(throw_exception alias)
 //show_json
-//throw_exception 抛出异常
 
 
 ////m model
