@@ -1,0 +1,12 @@
+.idea/*
+.well-known/*
+data/*
+
+.user.ini
+
+node_modules
+
+/vendor/
+/composer.lock
+
+/src/test
