@@ -1,6 +1,8 @@
 <?php
 namespace core\util;
 
+use think\App;
+
 /**
  * 配置管理类
  * @package think
@@ -26,8 +28,16 @@ class CoreConfig
      */
     public function __construct(string $path = null, string $ext = '.php')
     {
-        $this->path = $path ?: core_path('config');
+        $this->path = $path ? $path : '';
         $this->ext = $ext;
+    }
+
+    public static function __make(App $app)
+    {
+        $path = $app->getAppPath() . 'config' . DIRECTORY_SEPARATOR;
+        $ext = $app->getConfigExt();
+
+        return new static($path, $ext);
     }
 
     /**
