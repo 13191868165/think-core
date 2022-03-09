@@ -29,22 +29,28 @@ if (!function_exists('debug')) {
  */
 function throw_exception($code, $message = "", Throwable $previous = null)
 {
-    throw new \core\util\Exception($message, $code, $previous);
+    throw new \core\util\Exception($code, $message, $previous);
 }
 
 /**
- * 获取和设置配置参数
+ * 应用core目录
+ * @param string $path
+ * @return string
+ */
+function core_path($path = '')
+{
+    return app_path() . DIRECTORY_SEPARATOR . ($path ? $path . DIRECTORY_SEPARATOR : '');
+}
+
+/**
+ * 获取和设置core配置文件参数
  * @param string|array $name 参数名
  * @param mixed $value 参数值
  * @return mixed
  */
-function config($name = '', $value = null)
+function core_config($name = '', $value = null)
 {
-    if (is_array($name)) {
-        return \core\util\Config::set($name, $value);
-    }
-
-    return 0 === strpos($name, '?') ? \core\util\Config::has(substr($name, 1)) : \core\util\Config::get($name, $value);
+    return (new core\util\Config())->get($name, $value);
 }
 
 /**
@@ -57,7 +63,7 @@ function config($name = '', $value = null)
 function show_json($code, $msg = '', $data = [])
 {
     if (empty($msg) && $code >= 10000) {
-        $msg = isset(get_config('error')[$code]) ? get_config('error')[$code] : '';
+        $msg = isset(config('error')[$code]) ? config('error')[$code] : '';
     }
     return json(['code' => $code, 'data' => $data, 'msg' => $msg]);
 }
@@ -260,26 +266,7 @@ function show_json($code, $msg = '', $data = [])
 //    }
 //}
 //
-///**
-// * 应用core目录
-// * @param string $path
-// * @return string
-// */
-//function core_path($path = '')
-//{
-//    return app_path() . DIRECTORY_SEPARATOR . ($path ? $path . DIRECTORY_SEPARATOR : '');
-//}
-//
-///**
-// * 获取参数
-// * @param string $name
-// * @param null $value
-// * @return mixed
-// */
-//function get_config($name = '', $value = null)
-//{
-//    return (new core\util\Config())->get($name, $value);
-//}
+
 //
 ///**
 // * 系统加密方法
