@@ -187,7 +187,7 @@ class Captcha
         $this->color = imagecolorallocate($this->im, mt_rand(1, 150), mt_rand(1, 150), mt_rand(1, 150));
 
         // 验证码使用随机字体
-        $ttfPath = __DIR__ . '/../assets/' . ($this->useZh ? 'zhttfs' : 'ttfs') . '/';
+        $ttfPath = $this->getAssets(($this->useZh ? 'zhttfs' : 'ttfs') . '/');
 
         if (empty($this->fontttf)) {
             $dir = dir($ttfPath);
@@ -323,7 +323,7 @@ class Captcha
      */
     protected function background(): void
     {
-        $path = __DIR__ . '/../assets/bgs/';
+        $path = $this->getAssets('bgs');
         $dir = dir($path);
 
         $bgs = [];
@@ -341,6 +341,10 @@ class Captcha
         $bgImage = @imagecreatefromjpeg($gb);
         @imagecopyresampled($this->im, $bgImage, 0, 0, 0, 0, $this->imageW, $this->imageH, $width, $height);
         @imagedestroy($bgImage);
+    }
+
+    protected function getAssets($path = '') {
+        return dirname(__DIR__) . '/assets/' . strtolower((new \ReflectionClass($this))->getShortName()) . '/' . $path;
     }
 
 }

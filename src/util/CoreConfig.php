@@ -136,7 +136,7 @@ class CoreConfig
      * 设置配置参数 name为数组则为批量设置
      * @param array $config 配置参数
      * @param string|null $name 配置名
-     * @param bool $setConfig 设置应用配置 
+     * @param bool $setConfig 设置应用配置
      * @return array
      */
     public function set(array $config, string $name = null, $setConfig = false): array

@@ -96,7 +96,6 @@ function m()
     }
 
     $class = "\core\model\\{$name}";
-    debug($name);
     if (empty($args)) {
         $_modules[$name] = new $class();
     } else {
