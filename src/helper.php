@@ -50,11 +50,18 @@ function core_path($path = '')
  */
 function core_config($name = '', $value = null)
 {
-    if (is_array($name)) {
-        return \core\facade\CoreConfig::set($name, $value);
-    }
+    return \core\facade\CoreConfig::get($name, $value);
+}
 
-    return 0 === strpos($name, '?') ? \core\facade\CoreConfig::has(substr($name, 1)) : \core\facade\CoreConfig::get($name, $value);
+/**
+ * 设置配置文件
+ * @param $config
+ * @param $name
+ * @param bool $setConfig
+ * @return mixed
+ */
+function set_config($config, $name, $setConfig = false) {
+    return \core\facade\CoreConfig::set($config, $name, $setConfig);
 }
 
 /**
@@ -72,9 +79,36 @@ function show_json($code, $msg = '', $data = [])
     return json(['code' => $code, 'data' => $data, 'msg' => $msg]);
 }
 
+/**
+ * 实例化模型
+ * @return mixed
+ * @throws ReflectionException
+ */
+function m()
+{
+    static $_modules = [];
+
+    $args = func_get_args();
+    $name = ucfirst(array_shift($args));
+
+    if (isset($_modules[$name])) {
+        return $_modules[$name];
+    }
+
+    $class = "\core\model\\{$name}";
+    debug($name);
+    if (empty($args)) {
+        $_modules[$name] = new $class();
+    } else {
+        $reflection = new ReflectionClass($class);
+        $_modules[$name] = $reflection->newInstanceArgs($args);
+    }
+
+    return $_modules[$name];
+}
 
 
-//m model
+
 //u util
 //f facade
 //c config
@@ -113,34 +147,7 @@ function show_json($code, $msg = '', $data = [])
 //    return $usePrefix ? config('database.connections.mysql.prefix') . $name : $name;
 //}
 //
-///**
-// * 实例化模型
-// * @return mixed
-// * @throws ReflectionException
-// */
-//function m()
-//{
-//    static $_modules = [];
-//
-//    $args = func_get_args();
-//    $name = ucfirst(array_shift($args));
-//
-//    if (isset($_modules[$name])) {
-//        return $_modules[$name];
-//    }
-//
-//    $class = "\core\model\\{$name}";
-//
-//    if (empty($args)) {
-//        $_modules[$name] = new $class();
-//    } else {
-//        $reflection = new ReflectionClass($class);
-//        $_modules[$name] = $reflection->newInstanceArgs($args);
-//    }
-//
-//    return $_modules[$name];
-//}
-//
+
 
 //
 ///**
@@ -154,7 +161,7 @@ function show_json($code, $msg = '', $data = [])
 //    if ($password == '') {
 //        return '';
 //    }
-//    $authkey = get_config('setting.authkey');
+//    $authkey = core_config('setting.authkey');
 //    return sha1(md5("{$password}-{$salt}-") . $authkey);
 //}
 //
@@ -281,7 +288,7 @@ function show_json($code, $msg = '', $data = [])
 // */
 //function think_encrypt($data, $key = '', $expire = 0)
 //{
-//    $key = md5(empty($key) ? get_config('system.authkey') : $key);
+//    $key = md5(empty($key) ? core_config('system.authkey') : $key);
 //    $data = base64_encode($data);
 //    $x = 0;
 //    $len = strlen($data);
@@ -312,7 +319,7 @@ function show_json($code, $msg = '', $data = [])
 // */
 //function think_decrypt($data, $key = '')
 //{
-//    $key = md5(empty($key) ? get_config('system.authkey') : $key);
+//    $key = md5(empty($key) ? core_config('system.authkey') : $key);
 //    $data = substr($data, 32);
 //    $data = str_replace(array('-', '_'), array('+', '/'), $data);
 //    $mod4 = strlen($data) % 4;

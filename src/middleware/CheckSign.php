@@ -23,7 +23,7 @@ class CheckSign
         $site = $controller[0];
 
         //开发调试模式
-        $dev = get_config("{$site}.development");
+        $dev = core_config("{$site}.development");
         $devAppid = $dev['mode'] == true ? $dev['appid'] : '';
 
         //获取令牌
@@ -52,7 +52,7 @@ class CheckSign
         }
 
         //登录白名单
-        $config = get_config($site);
+        $config = core_config($site);
         if ($request->pathinfo() && $config['sign_white_list'] && in_array($request->pathinfo(), $config['sign_white_list'])) {
             return $response;
         }

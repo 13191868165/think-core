@@ -2,6 +2,7 @@
 namespace core\util;
 
 use think\App;
+use think\facade\Config;
 
 /**
  * 配置管理类
@@ -28,12 +29,11 @@ class CoreConfig
      */
     public function __construct(string $path = null, string $ext = '.php')
     {
-        $app = new App();
         $this->path = $path ? $path : [
-            $app->getAppPath() . 'config' . DIRECTORY_SEPARATOR,
+            app_path() . 'config' . DIRECTORY_SEPARATOR,
             realpath(dirname(__DIR__)) . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR,
         ];
-        $this->ext = $ext ? $ext : $app->getConfigExt();
+        $this->ext = $ext;
     }
 
     public static function __make()
@@ -134,27 +134,19 @@ class CoreConfig
 
     /**
      * 设置配置参数 name为数组则为批量设置
-     * @access public
-     * @param  array  $config 配置参数
-     * @param  string $name 配置名
+     * @param array $config 配置参数
+     * @param string|null $name 配置名
+     * @param bool $setConfig 设置应用配置 
      * @return array
      */
-    public function set(array $config, string $name = null): array
+    public function set(array $config, string $name = null, $setConfig = false): array
     {
-        $app = new App();
-        debug($app);exit;
-        if (!empty($name)) {
-            if (isset($this->config[$name])) {
-                $result = array_merge($this->config[$name], $config);
-            } else {
-                $result = $config;
-            }
+        $config = array_merge($this->get($name), $config);
 
-            $this->config[$name] = $result;
-        } else {
-            $result = $this->config = array_merge($this->config, array_change_key_case($config));
+        if($setConfig == true) {
+            $config = Config::set($config, $name);
         }
 
-        return $result;
+        return $config;
     }
 }
