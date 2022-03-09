@@ -5,7 +5,7 @@ namespace core\util;
  * 配置管理类
  * @package think
  */
-class CoreConfig
+class Config
 {
 
     /**
