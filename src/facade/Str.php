@@ -3,7 +3,7 @@ namespace core\facade;
 
 use think\Facade;
 
-class Test extends Facade
+class Str extends Facade
 {
     protected static function getFacadeClass()
     {
