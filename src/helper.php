@@ -50,11 +50,14 @@ function core_path($path = '')
  */
 function core_config($name = '', $value = null)
 {
-    return (new core\util\Config())->get($name, $value);
+    if (is_array($name)) {
+        return \core\facade\CoreConfig::set($name, $value);
+    }
+
+    return 0 === strpos($name, '?') ? \core\facade\CoreConfig::has(substr($name, 1)) : \core\facade\CoreConfig::get($name, $value);
 }
 
 /**
- * 请求返回数据
  * @param $code
  * @param string $msg
  * @param array $data
@@ -63,7 +66,8 @@ function core_config($name = '', $value = null)
 function show_json($code, $msg = '', $data = [])
 {
     if (empty($msg) && $code >= 10000) {
-        $msg = isset(config('error')[$code]) ? config('error')[$code] : '';
+        $config = core_config('error');
+        $msg = isset($config[$code]) ? $config[$code] : '';
     }
     return json(['code' => $code, 'data' => $data, 'msg' => $msg]);
 }

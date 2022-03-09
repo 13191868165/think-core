@@ -12,9 +12,9 @@ class CoreConfig
 
     /**
      * 配置文件目录
-     * @var string
+     * @var array|string
      */
-    protected $path;
+    protected $path = [];
 
     /**
      * 配置文件后缀
@@ -28,16 +28,17 @@ class CoreConfig
      */
     public function __construct(string $path = null, string $ext = '.php')
     {
-        $this->path = $path ? $path : '';
-        $this->ext = $ext;
+        $app = new App();
+        $this->path = $path ? $path : [
+            $app->getAppPath() . 'config' . DIRECTORY_SEPARATOR,
+            realpath(dirname(__DIR__)) . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR,
+        ];
+        $this->ext = $ext ? $ext : $app->getConfigExt();
     }
 
-    public static function __make(App $app)
+    public static function __make()
     {
-        $path = $app->getAppPath() . 'config' . DIRECTORY_SEPARATOR;
-        $ext = $app->getConfigExt();
-
-        return new static($path, $ext);
+        return new static();
     }
 
     /**
@@ -50,8 +51,15 @@ class CoreConfig
     {
         if (is_file($file)) {
             $filename = $file;
-        } elseif (is_file($this->path . $file . $this->ext)) {
-            $filename = $this->path . $file . $this->ext;
+        } else {
+            if (is_array($this->path)) {
+                foreach ($this->path as $path) {
+                    if (is_file($path . $file . $this->ext)) {
+                        $filename = $path . $file . $this->ext;
+                        break;
+                    }
+                }
+            }
         }
 
         if (isset($filename)) {
@@ -124,4 +132,29 @@ class CoreConfig
         return $config;
     }
 
+    /**
+     * 设置配置参数 name为数组则为批量设置
+     * @access public
+     * @param  array  $config 配置参数
+     * @param  string $name 配置名
+     * @return array
+     */
+    public function set(array $config, string $name = null): array
+    {
+        $app = new App();
+        debug($app);exit;
+        if (!empty($name)) {
+            if (isset($this->config[$name])) {
+                $result = array_merge($this->config[$name], $config);
+            } else {
+                $result = $config;
+            }
+
+            $this->config[$name] = $result;
+        } else {
+            $result = $this->config = array_merge($this->config, array_change_key_case($config));
+        }
+
+        return $result;
+    }
 }
