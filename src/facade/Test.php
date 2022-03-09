@@ -1,5 +1,5 @@
 <?php
-namespace app\core\facade;
+namespace core\facade;
 
 use think\Facade;
 
@@ -7,6 +7,6 @@ class Test extends Facade
 {
     protected static function getFacadeClass()
     {
-        return \app\core\Test::class;
+        return \core\Test::class;
     }
 }

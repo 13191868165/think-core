@@ -1,5 +1,5 @@
 <?php
-namespace app\core\util;
+namespace core\util;
 
 class Test
 {

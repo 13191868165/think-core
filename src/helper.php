@@ -242,7 +242,7 @@
 // */
 //function get_config($name = '', $value = null)
 //{
-//    return (new app\core\util\Config())->get($name, $value);
+//    return (new core\util\Config())->get($name, $value);
 //}
 //
 ///**

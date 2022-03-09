@@ -1,5 +1,5 @@
 <?php
-namespace app\core\util;
+namespace core\util;
 
 class Arr extends \think\helper\Arr
 {
