@@ -1,6 +1,6 @@
 <?php
-//namespace core\util;
-//
-//class Arr extends \think\helper\Arr
-//{
-//}
+namespace core\util;
+
+class Arr extends \think\helper\Arr
+{
+}
