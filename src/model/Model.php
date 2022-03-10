@@ -31,7 +31,7 @@ class Model
             //自动绑定表名为模型名
             if(empty($this->table)) {
                 //驼峰转下划线
-                $this->table = strtolower(\core\util\Str::snake($this->name, '_'));
+                $this->table = strtolower(\app\core\util\Str::snake($this->name, '_'));
             }
 
             //自动绑定主键

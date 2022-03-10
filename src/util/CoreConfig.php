@@ -30,8 +30,8 @@ class CoreConfig
     public function __construct(string $path = null, string $ext = '.php')
     {
         $this->path = $path ? $path : [
-            app_path() . 'config' . DIRECTORY_SEPARATOR,
-            realpath(dirname(__DIR__)) . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR,
+            core_path('config'),
+            core_path('config', true),
         ];
         $this->ext = $ext;
     }
@@ -61,7 +61,6 @@ class CoreConfig
                 }
             }
         }
-
         if (isset($filename)) {
             return $this->parse($filename, $name);
         }

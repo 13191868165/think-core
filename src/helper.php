@@ -35,11 +35,22 @@ function throw_exception($code, $message = "", Throwable $previous = null)
 /**
  * 应用core目录
  * @param string $path
+ * @param $isCore
  * @return string
  */
-function core_path($path = '')
+function core_path($path = '', $isCore = false)
 {
-    return app_path() . DIRECTORY_SEPARATOR . ($path ? $path . DIRECTORY_SEPARATOR : '');
+    if (is_bool($path)) {
+        $isCore = $path;
+        $path = '';
+    }
+    if ($isCore == true) {
+        $path =  __DIR__ . DIRECTORY_SEPARATOR . ($path ? $path . DIRECTORY_SEPARATOR : '');
+    } else {
+        $path = app_path() . 'core' . DIRECTORY_SEPARATOR . ($path ? $path . DIRECTORY_SEPARATOR : '');
+    }
+
+    return $path;
 }
 
 /**
@@ -60,7 +71,8 @@ function core_config($name = '', $value = null)
  * @param bool $setConfig
  * @return mixed
  */
-function set_config($config, $name, $setConfig = false) {
+function set_config($config, $name, $setConfig = false)
+{
     return \app\core\facade\CoreConfig::set($config, $name, $setConfig);
 }
 
@@ -95,7 +107,7 @@ function m()
         return $_modules[$name];
     }
 
-    $class = "\core\model\\{$name}";
+    $class = "\app\core\model\\{$name}";
     if (empty($args)) {
         $_modules[$name] = new $class();
     } else {
@@ -116,6 +128,8 @@ function table($name, $usePrefix = true)
 {
     return $usePrefix ? config('database.connections.mysql.prefix') . $name : $name;
 }
+
+
 
 
 //u util

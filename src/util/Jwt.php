@@ -4,6 +4,11 @@ namespace app\core\model;
 class Jwt
 {
 
+    public static $config = [
+        'secret' => 'aa5068b8f93ab9b0161b880152fcff03',
+        'algo' => 'HS256',
+    ];
+
     /**
      * JWT加密
      * @param $payload
@@ -11,8 +16,8 @@ class Jwt
      */
     public static function encode($payload)
     {
-        $secretKey = config('jwt.secret');
-        $algorithm = config('jwt.algo');
+        $secretKey = self::$config['secret'];
+        $algorithm = self::$config['algo'];
         if(!$secretKey || !$algorithm) {
             throw_exception(10001, 'JWT配置错误');
         }
@@ -28,8 +33,8 @@ class Jwt
      */
     public static function decode($jwt)
     {
-        $secretKey = config('jwt.secret');
-        $algorithm = config('jwt.algo');
+        $secretKey = self::$config['secret'];
+        $algorithm = self::$config['algo'];
         if(!$secretKey || !$algorithm) {
             throw_exception(10001, 'JWT配置错误');
         }
