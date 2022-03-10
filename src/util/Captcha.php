@@ -128,7 +128,7 @@ class Captcha
 
         $hash = password_hash($key, PASSWORD_BCRYPT, ['cost' => 10]);
 
-        $this->cache->set('captchaApi.' . $hash, 1, $this->expire);
+        $this->cache->set('captcha.' . $hash, 1, $this->expire);
 
         return [
             'value' => $bag,
@@ -149,13 +149,13 @@ class Captcha
     {
 
         $res = false;
-        if ($this->cache->get('captchaApi.' . $hash)) {
+        if ($this->cache->get('captcha.' . $hash)) {
             $code = mb_strtolower($code, 'UTF-8');
             $res = password_verify($code, $hash);
         }
 
         if ($del || $res) {
-            $this->cache->delete('captchaApi.' . $hash);
+            $this->cache->delete('captcha.' . $hash);
         }
 
         return $res;
