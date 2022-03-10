@@ -1,5 +1,5 @@
 <?php
-namespace core\model;
+namespace app\core\model;
 
 use app\core\util\Jwt;
 

@@ -1,16 +1,16 @@
 <?php
-namespace core\facade;
+namespace app\core\facade;
 
 use think\Facade;
 
 /**
  * Class Captcha
- * @package core\facade
+ * @package app\core\facade
  */
 class Captcha extends Facade
 {
     protected static function getFacadeClass()
     {
-        return \core\util\Captcha::class;
+        return \app\core\util\Captcha::class;
     }
 }

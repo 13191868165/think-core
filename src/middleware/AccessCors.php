@@ -1,12 +1,12 @@
 <?php
 declare (strict_types=1);
 
-namespace core\middleware;
+namespace app\core\middleware;
 
 /**
  * 跨域
  * Class AccessCors
- * @package core\middleware
+ * @package app\core\middleware
  */
 class AccessCors
 {

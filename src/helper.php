@@ -29,7 +29,7 @@ if (!function_exists('debug')) {
  */
 function throw_exception($code, $message = "", Throwable $previous = null)
 {
-    throw new \core\util\Exception($code, $message, $previous);
+    throw new \app\core\util\Exception($code, $message, $previous);
 }
 
 /**
@@ -50,7 +50,7 @@ function core_path($path = '')
  */
 function core_config($name = '', $value = null)
 {
-    return \core\facade\CoreConfig::get($name, $value);
+    return \app\core\facade\CoreConfig::get($name, $value);
 }
 
 /**
@@ -61,7 +61,7 @@ function core_config($name = '', $value = null)
  * @return mixed
  */
 function set_config($config, $name, $setConfig = false) {
-    return \core\facade\CoreConfig::set($config, $name, $setConfig);
+    return \app\core\facade\CoreConfig::set($config, $name, $setConfig);
 }
 
 /**

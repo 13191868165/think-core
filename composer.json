@@ -9,7 +9,7 @@
     },
     "autoload": {
         "psr-4": {
-            "core\\": "src/"
+            "app\\core\\": "src/"
         },
         "files": [
             "src/helper.php"
