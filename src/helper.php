@@ -92,6 +92,36 @@ function show_json($code, $msg = '', $data = [])
 }
 
 /**
+ * core命名空间
+ * @param $type
+ * @param $name
+ * @return string
+ */
+function core_namespace($type, $name) {
+    return "\app\core\\{$type}\\{$name}";
+}
+
+/**
+ * facade命名空间或快速调用静态方法
+ * @param $name
+ * @param string $fun
+ * @return string
+ */
+function f($name, $fun = '') {
+    $class = core_namespace('facade', $name);
+    return $fun ? ($class)::$fun() : $class;
+}
+
+/**
+ * util命名空间
+ * @param $name
+ * @return string
+ */
+function u($name) {
+    return core_namespace('util', $name);
+}
+
+/**
  * 实例化模型
  * @return mixed
  * @throws ReflectionException
@@ -101,15 +131,21 @@ function m()
     static $_modules = [];
 
     $args = func_get_args();
-    $name = ucfirst(array_shift($args));
+    if(empty($args)) {
+        return false;
+    }
+
+    $name = ucfirst($args[0]);
 
     if (isset($_modules[$name])) {
         return $_modules[$name];
     }
 
-    $class = "\app\core\model\\{$name}";
-    if (empty($args)) {
+    $class = core_namespace('model', $name);
+    if (count($args) == 1) {
         $_modules[$name] = new $class();
+    }elseif(count($args) == 2 && $args[1] === true) {
+        return $class;
     } else {
         $reflection = new ReflectionClass($class);
         $_modules[$name] = $reflection->newInstanceArgs($args);
@@ -128,159 +164,6 @@ function table($name, $usePrefix = true)
 {
     return $usePrefix ? config('database.connections.mysql.prefix') . $name : $name;
 }
-
-
-
-
-//u util
-//f facade
-//c config
-//u util
-//f facade
-//c config
-//
-///**
-// * 是否为空
-// * @param $data
-// * @return bool
-// */
-//function isEmpty($data) {
-//    $type = gettype($data);
-//    if($type == 'array') {
-//        return empty($data);
-//    }else{
-//        return (!isset($data) || $data === '' || $data === null) ? true : false;
-//    }
-//}
-//
-//
-///**
-// * 创建hash加密串
-// * @param $password
-// * @param string $salt
-// * @return string
-// */
-//function create_hash($password, $salt = '')
-//{
-//    if ($password == '') {
-//        return '';
-//    }
-//    $authkey = core_config('setting.authkey');
-//    return sha1(md5("{$password}-{$salt}-") . $authkey);
-//}
-//
-///**
-// * 生成指定长度随机字符串
-// * @param $length
-// * @return string
-// */
-//function random($length)
-//{
-//    return \think\helper\Str::random($length);
-//}
-//
-///**
-// * 驼峰转下划线
-// * @param $value
-// * @param string $delimiter
-// * @return false|mixed|string|string[]|null
-// */
-//function str_snake($value, $delimiter = '_')
-//{
-//    static $snakeCache = [];
-//
-//    $key = $value;
-//    if (isset($snakeCache[$key][$delimiter])) {
-//        return $snakeCache[$key][$delimiter];
-//    }
-//
-//    if (!ctype_lower($value)) {
-//        $value = preg_replace('/\s+/u', '', $value);
-//        $value = mb_strtolower(preg_replace('/(.)(?=[A-Z])/u', '$1' . $delimiter, $value), 'UTF-8');
-//    }
-//
-//    return $snakeCache[$key][$delimiter] = $value;
-//}
-//
-///**
-// * 下划线转驼峰(首字母小写)
-// * @param $value
-// * @return mixed|string
-// */
-//function str_camel($value)
-//{
-//    static $camelCache = [];
-//
-//    if (isset($camelCache[$value])) {
-//        return $camelCache[$value];
-//    }
-//
-//    return $camelCache[$value] = lcfirst(str_studly($value));
-//}
-//
-///**
-// * 下划线转驼峰(首字母大写)
-// * @param $value
-// * @return mixed|string|string[]
-// */
-//function str_studly($value)
-//{
-//    static $studlyCache = [];
-//
-//    $key = $value;
-//    if (isset($studlyCache[$key])) {
-//        return $studlyCache[$key];
-//    }
-//
-//    $value = ucwords(str_replace(['-', '_'], ' ', $value));
-//
-//    return $studlyCache[$key] = str_replace(' ', '', $value);
-//}
-//
-///**
-// * 格式化价格
-// * @param $money
-// * @param int $len
-// * @param string $separator
-// * @param bool $abs
-// * @return string
-// */
-//function format_price($money, $len = 2, $separator = '', $abs = true)
-//{
-//    if ($abs) {
-//        $money = abs($money);
-//    }
-//    $len = intval($len);
-//    return number_format($money, $len, '.', $separator);
-//}
-//
-///**
-// * 获取ip
-// * @return mixed|string
-// */
-//function getip()
-//{
-//    static $ip = '';
-//    $ip = $_SERVER['REMOTE_ADDR'];
-//    if (isset($_SERVER['HTTP_CDN_SRC_IP'])) {
-//        $ip = $_SERVER['HTTP_CDN_SRC_IP'];
-//    } elseif (isset($_SERVER['HTTP_CLIENT_IP'])) {
-//        $ip = $_SERVER['HTTP_CLIENT_IP'];
-//    } elseif (isset($_SERVER['HTTP_X_FORWARDED_FOR']) && preg_match_all('#\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}#s', $_SERVER['HTTP_X_FORWARDED_FOR'], $matches)) {
-//        foreach ($matches[0] AS $xip) {
-//            if (!preg_match('#^(10|172\.16|192\.168)\.#', $xip)) {
-//                $ip = $xip;
-//                break;
-//            }
-//        }
-//    }
-//    if (preg_match('/^([0-9]{1,3}\.){3}[0-9]{1,3}$/', $ip)) {
-//        return $ip;
-//    } else {
-//        return '127.0.0.1';
-//    }
-//}
-//
 
 //
 ///**

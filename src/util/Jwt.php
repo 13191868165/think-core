@@ -1,5 +1,5 @@
 <?php
-namespace app\core\model;
+namespace app\core\util;
 
 class Jwt
 {
@@ -16,14 +16,8 @@ class Jwt
      */
     public static function encode($payload)
     {
-        $secretKey = self::$config['secret'];
-        $algorithm = self::$config['algo'];
-        if(!$secretKey || !$algorithm) {
-            throw_exception(10001, 'JWT配置错误');
-        }
-
         // 使用Firebase JWT解码并返回
-        return \Firebase\JWT\JWT::encode($payload, $secretKey, $algorithm);
+        return \Firebase\JWT\JWT::encode($payload, self::$config['secret'], self::$config['algo']);
     }
 
     /**
@@ -33,17 +27,12 @@ class Jwt
      */
     public static function decode($jwt)
     {
-        $secretKey = self::$config['secret'];
-        $algorithm = self::$config['algo'];
-        if(!$secretKey || !$algorithm) {
-            throw_exception(10001, 'JWT配置错误');
-        }
-
         // 使用Firebase JWT解码
         try {
-            $decode = \Firebase\JWT\JWT::decode($jwt, $secretKey, array($algorithm));
+            $key = new \Firebase\JWT\Key(self::$config['secret'], self::$config['algo']);
+            $decode = \Firebase\JWT\JWT::decode($jwt, $key);
             return $decode;
-        }catch(\think\Exception $e) {
+        } catch (\think\Exception $e) {
             return false;
         }
     }

@@ -186,7 +186,7 @@ class Model
                         }elseif($type == 'readHtml') {
                             $data[$key] = empty($data[$key]) ? '' : html_entity_decode($data[$key]);
                         }elseif($type == 'hash') {
-                            $data[$key] = create_hash($value[1], ($value[2] ? $value[2] : ''));
+                            $data[$key] = f('Str')::createHash($value[1], ($value[2] ? $value[2] : ''));
                         }elseif($type == 'serialize') {
                             $data[$key] = empty($data[$key]) ? '' : serialize($data[$key]);
                         }elseif($type == 'unserialize') {

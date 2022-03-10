@@ -24,8 +24,8 @@ class CheckSign
         $site = $controller[0];
 
         //开发调试模式
-        $dev = core_config("{$site}.development");
-        $devAppid = $dev['mode'] == true ? $dev['appid'] : '';
+        $dev = core_config("development.{$site}");
+        $devAppid = $dev['debug'] == true ? $dev['appid'] : '';
 
         //获取令牌
         $appid = $request->header('x-access-appid', $devAppid);
@@ -64,7 +64,7 @@ class CheckSign
         unset($param['controller']);
 
         //开发调试模式
-        $devSign = $dev['mode'] == true ? Str::sign($param, $app['secret']) : '';
+        $devSign = $dev['debug'] == true ? Str::sign($param, $app['secret']) : '';
         $sign = $request->param('sign', $devSign);
         if (empty($sign)) {
             throw_exception(10104);
