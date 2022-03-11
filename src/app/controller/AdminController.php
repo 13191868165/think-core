@@ -2,8 +2,6 @@
 declare (strict_types=1);
 namespace app\controller;
 
-use app\BaseController;
-
 /**
  * 管理端基类
  * Class AdminController
