@@ -14,7 +14,7 @@
             "app\\": "src/app"
         },
         "files": [
-            "src/function/global.php"
+            "src/app/function/global.php"
         ]
     },
     "authors": [
