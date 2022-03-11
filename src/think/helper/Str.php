@@ -9,6 +9,6 @@ class Str
 {
     protected function tt()
     {
-        return 'ttttt';
+        return 'tttttttt';
     }
 }
