@@ -46,9 +46,9 @@ function core_path($path = '', $isCore = false)
         $path = '';
     }
     if ($isCore == true) {
-        $path = __DIR__ . DIRECTORY_SEPARATOR . ($path ? $path . DIRECTORY_SEPARATOR : '');
+        $path = dirname(__DIR__) . DIRECTORY_SEPARATOR . ($path ? $path . DIRECTORY_SEPARATOR : '');
     } else {
-        $path = app_path() . 'core' . DIRECTORY_SEPARATOR . ($path ? $path . DIRECTORY_SEPARATOR : '');
+        $path = app_path() . ($path ? $path . DIRECTORY_SEPARATOR : '');
     }
 
     return $path;
