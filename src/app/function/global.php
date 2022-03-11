@@ -29,7 +29,8 @@ if (!function_exists('debug')) {
  */
 function throw_exception($code, $message = "", Throwable $previous = null)
 {
-    throw new \app\util\Exception($code, $message, $previous);
+    $Exception = u('Exception');
+    throw new $Exception($code, $message, $previous);
 }
 
 /**
@@ -45,7 +46,7 @@ function core_path($path = '', $isCore = false)
         $path = '';
     }
     if ($isCore == true) {
-        $path =  __DIR__ . DIRECTORY_SEPARATOR . ($path ? $path . DIRECTORY_SEPARATOR : '');
+        $path = __DIR__ . DIRECTORY_SEPARATOR . ($path ? $path . DIRECTORY_SEPARATOR : '');
     } else {
         $path = app_path() . 'core' . DIRECTORY_SEPARATOR . ($path ? $path . DIRECTORY_SEPARATOR : '');
     }
@@ -61,7 +62,7 @@ function core_path($path = '', $isCore = false)
  */
 function core_config($name = '', $value = null)
 {
-    return \app\facade\CoreConfig::get($name, $value);
+    return f('CoreConfig')::get($name, $value);
 }
 
 /**
@@ -73,7 +74,8 @@ function core_config($name = '', $value = null)
  */
 function set_config($config, $name, $setConfig = false)
 {
-    return \app\facade\CoreConfig::set($config, $name, $setConfig);
+
+    return f('CoreConfig')::set($config, $name, $setConfig);
 }
 
 /**
@@ -97,7 +99,8 @@ function show_json($code, $msg = '', $data = [])
  * @param $name
  * @return string
  */
-function core_namespace($type, $name) {
+function core_namespace($type, $name)
+{
     return "\app\\{$type}\\{$name}";
 }
 
@@ -107,7 +110,8 @@ function core_namespace($type, $name) {
  * @param string $fun
  * @return string
  */
-function f($name, $fun = '') {
+function f($name, $fun = '')
+{
     $class = core_namespace('facade', $name);
     return $fun ? ($class)::$fun() : $class;
 }
@@ -117,7 +121,8 @@ function f($name, $fun = '') {
  * @param $name
  * @return string
  */
-function u($name) {
+function u($name)
+{
     return core_namespace('util', $name);
 }
 
@@ -131,7 +136,7 @@ function m()
     static $_modules = [];
 
     $args = func_get_args();
-    if(empty($args)) {
+    if (empty($args)) {
         return false;
     }
 
@@ -144,7 +149,7 @@ function m()
     $class = core_namespace('model', $name);
     if (count($args) == 1) {
         $_modules[$name] = new $class();
-    }elseif(count($args) == 2 && $args[1] === true) {
+    } elseif (count($args) == 2 && $args[1] === true) {
         return $class;
     } else {
         $reflection = new ReflectionClass($class);
