@@ -1,7 +1,7 @@
 <?php
 declare (strict_types=1);
 
-namespace app\core\util;
+namespace app\util;
 
 use Throwable;
 

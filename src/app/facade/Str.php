@@ -1,5 +1,5 @@
 <?php
-namespace app\core\facade;
+namespace app\facade;
 
 use think\Facade;
 
@@ -7,6 +7,6 @@ class Str extends Facade
 {
     protected static function getFacadeClass()
     {
-        return \app\core\util\Str::class;
+        return \app\util\Str::class;
     }
 }

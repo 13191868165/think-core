@@ -1,5 +1,5 @@
 <?php
-namespace app\core\util;
+namespace app\util;
 
 use Exception;
 use think\Config;
@@ -8,7 +8,7 @@ use think\Cache;
 /**
  * 验证码
  * Class Captcha
- * @package app\core\util
+ * @package app\util
  */
 class Captcha
 {

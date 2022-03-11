@@ -10,10 +10,11 @@
     },
     "autoload": {
         "psr-4": {
-            "app\\core\\": "src/"
+            "think\\": "src/think",
+            "app\\": "src/app"
         },
         "files": [
-            "src/helper.php"
+            "src/core/function/functions.php"
         ]
     },
     "authors": [
@@ -21,12 +22,5 @@
             "name": "king",
             "email": "1931651368@qq.com"
         }
-    ],
-    "extra": {
-        "think": {
-            "config":{
-                "captcha": "src/config/captcha.php"
-            }
-        }
-    }
+    ]
 }

@@ -1,13 +1,13 @@
 <?php
 declare (strict_types=1);
-namespace app\core\middleware;
+namespace app\middleware;
 
-use app\core\facade\Str;
+use app\facade\Str;
 
 /**
  * 验签
  * Class CheckSign
- * @package app\core\middleware
+ * @package app\middleware
  */
 class CheckSign
 {

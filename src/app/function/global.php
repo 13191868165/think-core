@@ -29,7 +29,7 @@ if (!function_exists('debug')) {
  */
 function throw_exception($code, $message = "", Throwable $previous = null)
 {
-    throw new \app\core\util\Exception($code, $message, $previous);
+    throw new \app\util\Exception($code, $message, $previous);
 }
 
 /**
@@ -61,7 +61,7 @@ function core_path($path = '', $isCore = false)
  */
 function core_config($name = '', $value = null)
 {
-    return \app\core\facade\CoreConfig::get($name, $value);
+    return \app\facade\CoreConfig::get($name, $value);
 }
 
 /**
@@ -73,7 +73,7 @@ function core_config($name = '', $value = null)
  */
 function set_config($config, $name, $setConfig = false)
 {
-    return \app\core\facade\CoreConfig::set($config, $name, $setConfig);
+    return \app\facade\CoreConfig::set($config, $name, $setConfig);
 }
 
 /**
@@ -98,7 +98,7 @@ function show_json($code, $msg = '', $data = [])
  * @return string
  */
 function core_namespace($type, $name) {
-    return "\app\core\\{$type}\\{$name}";
+    return "\app\\{$type}\\{$name}";
 }
 
 /**
