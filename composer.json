@@ -22,5 +22,8 @@
             "name": "king",
             "email": "1931651368@qq.com"
         }
-    ]
+    ],
+    "require-dev": {
+        "phpunit/phpunit": "^9.5"
+    }
 }

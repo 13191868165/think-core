@@ -22,15 +22,15 @@ class Str extends \think\helper\Str
     /**
      * 签名
      * @param $param
-     * @param string $sign_key
+     * @param string $key
      * @return string
      */
-    public function sign($param, $sign_key = '')
+    public function sign($param, $key = '')
     {
         //数组排序
         ksort($param);
         $str = http_build_query($param);
-        return md5(sha1($str) . $sign_key);
+        return md5(sha1($str) . $key);
     }
 
     /**
@@ -39,13 +39,13 @@ class Str extends \think\helper\Str
      * @param string $salt
      * @return string
      */
-    public function createHash($password, $salt = '')
+    public function createHash($str, $salt = '')
     {
-        if ($password == '') {
+        if ($str == '') {
             return '';
         }
         $authkey = core_config('setting.authkey');
-        return sha1(md5("{$password}-{$salt}-") . $authkey);
+        return sha1(md5("{$str}-{$salt}-") . $authkey);
     }
 
     /**
@@ -56,7 +56,7 @@ class Str extends \think\helper\Str
      * @param bool $abs
      * @return string
      */
-    public function format_price($money, $len = 2, $separator = '', $abs = true)
+    public function priceFormat($money, $len = 2, $separator = '', $abs = true)
     {
         if ($abs) {
             $money = max(0, ($money * 1));
@@ -92,6 +92,117 @@ class Str extends \think\helper\Str
         }
     }
 
+    /**
+     * 加密方法
+     * @param string $data 要加密的字符串
+     * @param string $key 加密密钥
+     * @param int $expire 过期时间 单位 秒
+     * @return string
+     */
+    public function encrypt($data, $key = '', $expire = 0)
+    {
+        $key = md5(empty($key) ? core_config('admin.authkey') : $key);
+        $data = base64_encode($data);
+        $x = 0;
+        $len = strlen($data);
+        $l = strlen($key);
+        $char = '';
 
+        for ($i = 0; $i < $len; $i++) {
+            if ($x == $l) $x = 0;
+            $char .= substr($key, $x, 1);
+            $x++;
+        }
+
+        $str = sprintf('%010d', $expire ? $expire + time() : 0);
+
+        for ($i = 0; $i < $len; $i++) {
+            $str .= chr(ord(substr($data, $i, 1)) + (ord(substr($char, $i, 1))) % 256);
+        }
+
+        $str = str_replace(array('+', '/', '='), array('-', '_', ''), base64_encode($str));
+        return strtoupper(md5($str)) . $str;
+    }
+
+    /**
+     * 系统解密方法
+     * @param string $data 要解密的字符串 （必须是think_encrypt方法加密的字符串）
+     * @param string $key 加密密钥
+     * @return string
+     */
+    public function decrypt($data, $key = '')
+    {
+        $key = md5(empty($key) ? core_config('admin.authkey') : $key);
+        $data = substr($data, 32);
+        $data = str_replace(array('-', '_'), array('+', '/'), $data);
+        $mod4 = strlen($data) % 4;
+        if ($mod4) {
+            $data .= substr('====', $mod4);
+        }
+        $data = base64_decode($data);
+        $expire = substr($data, 0, 10);
+        $data = substr($data, 10);
+
+        if ($expire > 0 && $expire < time()) {
+            return '';
+        }
+        $x = 0;
+        $len = strlen($data);
+        $l = strlen($key);
+        $char = $str = '';
+
+        for ($i = 0; $i < $len; $i++) {
+            if ($x == $l) $x = 0;
+            $char .= substr($key, $x, 1);
+            $x++;
+        }
+
+        for ($i = 0; $i < $len; $i++) {
+            if (ord(substr($data, $i, 1)) < ord(substr($char, $i, 1))) {
+                $str .= chr((ord(substr($data, $i, 1)) + 256) - ord(substr($char, $i, 1)));
+            } else {
+                $str .= chr(ord(substr($data, $i, 1)) - ord(substr($char, $i, 1)));
+            }
+        }
+        return base64_decode($str);
+    }
+
+    /**
+     * 数据脱敏
+     * @param $str
+     * @param int $start 开始位置
+     * @param int $len 长度
+     * @param string $separator 符号
+     * @param int $sepLen 符号长度
+     * @return string
+     */
+    public function dataMasking($str, $start = 0, $len = 0, $separator = '*', $sepLen = 0)
+    {
+        $start = max(0, $start);
+        $len = max(0, $len);
+
+        $arr = [];
+        if (!empty($str)) {
+            $strlen = mb_strlen($str);
+
+            if ($len == 0) {
+                $end = $strlen;
+            } else {
+                $end = min($strlen, $start + $len);
+            }
+
+            for ($i = 0; $i < $strlen; $i++) {
+                if ($i >= $start && $i < $end) {
+                    if($sepLen == 0 || ($sepLen > 0 && $i >= ($end - $sepLen))) {
+                        $arr[$i] = $separator;
+                    }
+                } else {
+                    $arr[$i] = mb_substr($str, $i, 1, 'utf8');
+                }
+            }
+        }
+
+        return implode('', $arr);
+    }
 
 }

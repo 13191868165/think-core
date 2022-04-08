@@ -19,7 +19,8 @@ abstract class AdminController extends BaseController
     protected function initialize()
     {
         //初始化模型名称
-        $this::$model = (new \ReflectionClass($this))->getShortName();
+        $name       = str_replace('\\', '/', static::class);
+        $this::$model = basename($name);
 
         //检查登录白名单
         if ($this->checkLoginWhiteList()) {

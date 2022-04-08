@@ -25,9 +25,10 @@ class Model
     public function __construct()
     {
         if(empty($this->name)) {
-            $this->name = (new \ReflectionClass($this))->getShortName();
+            $name       = str_replace('\\', '/', static::class);
+            $this->name = basename($name);
         }
-        if($this->name != 'Model') {
+        if(ucfirst($this->name) != 'Model') {
             //自动绑定表名为模型名
             if(empty($this->table)) {
                 //驼峰转下划线
