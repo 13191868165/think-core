@@ -97,11 +97,13 @@ function show_json($code, $msg = '', $data = [])
  * core命名空间
  * @param $type
  * @param $name
+ * @param bool $new
  * @return string
  */
-function app_namespace($type, $name)
+function app_namespace($type, $name, $new = false)
 {
-    return "\app\\{$type}\\{$name}";
+    $class = "\app\\{$type}\\{$name}";
+    return $new == true ? new $class() : $class;
 }
 
 /**
@@ -119,11 +121,12 @@ function f($name, $fun = '')
 /**
  * util命名空间
  * @param $name
+ * @param bool $new
  * @return string
  */
-function u($name)
+function u($name, $new = false)
 {
-    return app_namespace('util', $name);
+    return app_namespace('util', $name, $new);
 }
 
 /**
@@ -140,18 +143,13 @@ function m()
         return false;
     }
 
-    $name = ucfirst($args[0]);
-
-    if (isset($_modules[$name])) {
-        return $_modules[$name];
-    }
-
-    $class = app_namespace('model', $name);
-    if (count($args) == 1) {
-        $_modules[$name] = new $class();
-    } elseif (count($args) == 2 && $args[1] === true) {
-        return $class;
-    } else {
+    $name = ucfirst($args[0]); //模型名称
+    if (count($args) == 1) { //实例化
+        $_modules[$name] = app_namespace('model', $name, true);
+    } elseif (count($args) == 2 && $args[1] === true) { //命名空间
+        return app_namespace('model', $name);
+    } else { //实例化并传参
+        $class = app_namespace('model', $name);
         $reflection = new ReflectionClass($class);
         $_modules[$name] = $reflection->newInstanceArgs($args);
     }
