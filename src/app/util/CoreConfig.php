@@ -1,7 +1,6 @@
 <?php
 namespace app\util;
 
-use think\App;
 use think\facade\Config;
 
 /**
@@ -142,7 +141,19 @@ class CoreConfig
      */
     public function set($config, $name = null, $setConfig = false)
     {
-        $config = array_merge($this->get($name), $config);
+        if (empty($name)) {
+            return [];
+        }
+        if ($setConfig == true) {
+            $cfg = config($name);
+            if (isset($cfg)) {
+                $config = array_merge($cfg, $config);
+            }
+
+            $config = Config::set($config, $name);
+        } else {
+            $config = array_merge($this->get($name), $config);
+        }
 
         if ($setConfig == true) {
             $config = Config::set($config, $name);
