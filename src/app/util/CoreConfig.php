@@ -144,6 +144,7 @@ class CoreConfig
         if (empty($name)) {
             return [];
         }
+
         if ($setConfig == true) {
             $cfg = config($name);
             if (isset($cfg)) {
@@ -153,10 +154,6 @@ class CoreConfig
             $config = Config::set($config, $name);
         } else {
             $config = array_merge($this->get($name), $config);
-        }
-
-        if ($setConfig == true) {
-            $config = Config::set($config, $name);
         }
 
         return $config;
