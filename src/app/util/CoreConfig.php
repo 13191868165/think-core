@@ -25,9 +25,11 @@ class CoreConfig
 
     /**
      * 构造方法
-     * @access public
+     * CoreConfig constructor.
+     * @param string|null $path
+     * @param string $ext
      */
-    public function __construct(string $path = null, string $ext = '.php')
+    public function __construct($path = null, $ext = '.php')
     {
         $this->path = $path ? $path : [
             core_path('config'),
@@ -47,7 +49,7 @@ class CoreConfig
      * @param string $name
      * @return array
      */
-    public function load(string $file, string $name = ''): array
+    public function load(string $file, $name = '')
     {
         if (is_file($file)) {
             $filename = $file;
@@ -70,10 +72,10 @@ class CoreConfig
 
     /**
      * 解析配置文件
-     * @param string $file
-     * @return array
+     * @param $file
+     * @return array|mixed
      */
-    protected function parse(string $file): array
+    protected function parse($file)
     {
         $type = pathinfo($file, PATHINFO_EXTENSION);
         $config = [];
@@ -105,7 +107,7 @@ class CoreConfig
      * @param mixed $default 默认值
      * @return mixed
      */
-    public function get(string $name = null, $default = null)
+    public function get($name = null, $default = null)
     {
         // 无参数时获取所有
         if (empty($name)) {
@@ -138,11 +140,11 @@ class CoreConfig
      * @param bool $setConfig 设置应用配置
      * @return array
      */
-    public function set(array $config, string $name = null, $setConfig = false): array
+    public function set($config, $name = null, $setConfig = false)
     {
         $config = array_merge($this->get($name), $config);
 
-        if($setConfig == true) {
+        if ($setConfig == true) {
             $config = Config::set($config, $name);
         }
 

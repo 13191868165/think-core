@@ -60,7 +60,7 @@ function core_path($path = '', $isCore = false)
  * @param mixed $value 参数值
  * @return mixed
  */
-function app_config($name = '', $value = null)
+function get_config($name = '', $value = null)
 {
     return f('CoreConfig')::get($name, $value);
 }
@@ -87,7 +87,7 @@ function set_config($config, $name, $setConfig = false)
 function show_json($code, $msg = '', $data = [])
 {
     if (empty($msg) && $code >= 10000) {
-        $config = app_config('error');
+        $config = get_config('error');
         $msg = isset($config[$code]) ? $config[$code] : '';
     }
     return json(['code' => $code, 'data' => $data, 'msg' => $msg]);
