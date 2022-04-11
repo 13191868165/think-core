@@ -74,7 +74,6 @@ function get_config($name = '', $value = null)
  */
 function set_config($config, $name, $setConfig = false)
 {
-
     return f('CoreConfig')::set($config, $name, $setConfig);
 }
 
