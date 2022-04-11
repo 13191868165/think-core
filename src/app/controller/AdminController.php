@@ -28,7 +28,7 @@ abstract class AdminController extends BaseController
         }
 
         //开发调试模式
-        $dev = core_config("development.{$this->site}");
+        $dev = get_config("development.{$this->site}");
         $devToken = $dev['debug'] == true ? $dev['token'] : '';
 
         //校验用户访问令牌
@@ -53,7 +53,7 @@ abstract class AdminController extends BaseController
 
         $path = request()->pathinfo();
 
-        $white_list = core_config("{$site}.login_white_list");
+        $white_list = get_config("{$site}.login_white_list");
         if (!empty($path) && !empty($white_list) && in_array($path, $white_list)) {
             return true;
         }

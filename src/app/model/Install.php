@@ -48,7 +48,7 @@ class Install
      */
     public function run($field = ['status'], $function)
     {
-        $modules = core_config('module');
+        $modules = get_config('module');
         $result = [];
         foreach($modules as $value) {
             $sql = m($value)->$function();

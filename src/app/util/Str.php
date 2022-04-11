@@ -30,7 +30,7 @@ class Str extends \think\helper\Str
         if ($str == '') {
             return '';
         }
-        $authkey = core_config('setting.authkey');
+        $authkey = get_config('setting.authkey');
         return sha1(md5("{$str}-{$salt}-") . $authkey);
     }
 
@@ -87,7 +87,7 @@ class Str extends \think\helper\Str
      */
     public function encrypt($data, $key = '', $expire = 0)
     {
-        $key = md5(empty($key) ? core_config('admin.authkey') : $key);
+        $key = md5(empty($key) ? get_config('admin.authkey') : $key);
         $data = base64_encode($data);
         $x = 0;
         $len = strlen($data);
@@ -118,7 +118,7 @@ class Str extends \think\helper\Str
      */
     public function decrypt($data, $key = '')
     {
-        $key = md5(empty($key) ? core_config('admin.authkey') : $key);
+        $key = md5(empty($key) ? get_config('admin.authkey') : $key);
         $data = substr($data, 32);
         $data = str_replace(array('-', '_'), array('+', '/'), $data);
         $mod4 = strlen($data) % 4;
