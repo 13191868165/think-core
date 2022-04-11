@@ -160,10 +160,10 @@ function m()
 /**
  * 表名
  * @param $name
- * @param bool $usePrefix
+ * @param string $type
  * @return string
  */
-function table($name, $usePrefix = true)
+function table($name, $type = 'mysql')
 {
-    return $usePrefix ? config('database.connections.mysql.prefix') . $name : $name;
+    return empty($type) ? $name : config("database.connections.{$type}.prefix") . $name;
 }
