@@ -20,22 +20,8 @@ class Str extends \think\helper\Str
     }
 
     /**
-     * 签名
-     * @param $param
-     * @param string $key
-     * @return string
-     */
-    public function sign($param, $key = '')
-    {
-        //数组排序
-        ksort($param);
-        $str = http_build_query($param);
-        return md5(sha1($str) . $key);
-    }
-
-    /**
      * 创建hash加密串
-     * @param $password
+     * @param $str
      * @param string $salt
      * @return string
      */
