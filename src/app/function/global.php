@@ -171,20 +171,26 @@ function table($name, $type = 'mysql')
  * 检查路由
  * @return void
  */
-function checkRoute($list, $route) {
-    debug($list);
-    debug($route);
-    exit;
+function checkWhitelist($list, $method)
+{
+    $method = explode('.', strtolower($method));
+
     $result = false;
-//    foreach ($list as &$value) {
-//        if (!empty($value)) {
-//            $value = strtolower($value);
-//            $arr = explode('.', $value);
-//            //添加*通配符
-//            if ($arr[2] === '*' && $arr[1] === $this->controller) {
-//                $result = true;
-//                break;
-//            }
-//        }
-//    }
+    if (count($list) > 0 && count($method) == 3) {
+        foreach ($list as &$value) {
+            $value = explode('.', strtolower($value));
+            if (count($value) != 3) {
+                break;
+            }
+            if ($method[0] == $value[0]
+                && $method[1] == $value[1]
+                && ($method[2] == $value[2] || $value[2] === '*')) {
+                $result = true;
+                break;
+            }
+        }
+        unset($value);
+    }
+
+    return $result;
 }
