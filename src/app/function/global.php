@@ -194,3 +194,26 @@ function checkWhitelist($list, $method)
 
     return $result;
 }
+
+/**
+ * 输出日志
+ * @return void
+ */
+function outlog()
+{
+    $args = func_get_args();
+    $file = array_pop($args);
+
+    $time = date('Y-m-d H:i:s');
+    $message = ["时间：{$time}，内容：\n"];
+    if (count($args) > 0) {
+        foreach ($args as $value) {
+            $message[] = (is_array($value) || is_object($value))
+                ? var_export($value, TRUE)
+                : $value;
+        }
+    }
+    $message[] = "\n";
+    $message = join($message);
+    error_log($message, 3, runtime_path() . $file);
+}
