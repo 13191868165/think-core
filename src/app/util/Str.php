@@ -30,7 +30,15 @@ class Str extends \think\helper\Str
         if ($str == '') {
             return '';
         }
-        $authkey = get_config('setting.authkey');
+        $method = input('method');
+        if (!empty($method)) {
+            $method = preg_replace(['/\/\//', '/\//', '/\.\./'], '.', trim($method, '/'));
+            $method = array_filter(explode('.', $method));
+            if (!empty($method[0])) {
+                $authkey = get_config("{$method[0]}.authkey");
+            }
+        }
+        $authkey = $authkey ?? get_config("admin.authkey");
         return sha1(md5("{$str}-{$salt}-") . $authkey);
     }
 
@@ -64,7 +72,7 @@ class Str extends \think\helper\Str
         } elseif (isset($_SERVER['HTTP_CLIENT_IP'])) {
             $ip = $_SERVER['HTTP_CLIENT_IP'];
         } elseif (isset($_SERVER['HTTP_X_FORWARDED_FOR']) && preg_match_all('#\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}#s', $_SERVER['HTTP_X_FORWARDED_FOR'], $matches)) {
-            foreach ($matches[0] AS $xip) {
+            foreach ($matches[0] as $xip) {
                 if (!preg_match('#^(10|172\.16|192\.168)\.#', $xip)) {
                     $ip = $xip;
                     break;
@@ -179,7 +187,7 @@ class Str extends \think\helper\Str
 
             for ($i = 0; $i < $strlen; $i++) {
                 if ($i >= $start && $i < $end) {
-                    if($sepLen == 0 || ($sepLen > 0 && $i >= ($end - $sepLen))) {
+                    if ($sepLen == 0 || ($sepLen > 0 && $i >= ($end - $sepLen))) {
                         $arr[$i] = $separator;
                     }
                 } else {
@@ -191,4 +199,19 @@ class Str extends \think\helper\Str
         return implode('', $arr);
     }
 
+    /**
+     * 转化label数据
+     * @param $data
+     * @param $nameText
+     * @param $valueText
+     * @return array
+     */
+    public function toLabelData($data, $nameText = 'label', $valueText = 'value')
+    {
+        $result = [];
+        foreach ($data as $key => $value) {
+            $result[$key] = [$nameText => $value, $valueText => $key];
+        }
+        return $result;
+    }
 }

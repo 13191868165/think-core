@@ -9,8 +9,14 @@ use think\App;
  * Class AdminController
  * @package app
  */
-abstract class AdminController extends BaseController
+abstract class ApiController extends BaseController
 {
+    /**
+     * 来源
+     * @var
+     */
+    protected $source;
+
     /**
      * 模型名称
      * @var string
@@ -33,7 +39,7 @@ abstract class AdminController extends BaseController
         }
 
         $payload = u('Jwt')::decode($token);
-        if ($payload === false || empty($payload->id) || empty($payload->login_time) || empty($payload->entry)) {
+        if ($payload === false || empty($payload->id) || empty($payload->login_time)) {
             throw_exception(10211);
         }
 
@@ -43,7 +49,7 @@ abstract class AdminController extends BaseController
         }
 
         //获取用户数据
-        $user = m('admin')->getUser($payload->id);
+        $user = m('user')->getUser($payload->id);
 
         //检查用户是否存在
         if (empty($user)) {
@@ -61,31 +67,31 @@ abstract class AdminController extends BaseController
         }
 
         return [
-            //管理员会员信息
             'id' => $user['id'],
-            'group_id' => $user['group_id'],
+            'level_id' => $user['level_id'],
+            'category_id' => $user['category_id'],
             'username' => $user['username'],
+            'phone' => $user['phone'],
             'email' => $user['email'],
+            'credit1' => $user['credit1'],
+            'credit2' => $user['credit2'],
+            'nickname' => $user['nickname'],
             'realname' => $user['realname'],
             'avatar' => $user['avatar'],
-            'phone' => $user['phone'],
             'sex' => $user['sex'],
-            'user_id' => $user['user_id'],
-            'merchant_id' => $user['merchant_id'],
-            'is_merchant_admin' => $user['is_merchant_admin'],
-            'status' => $user['status'],
-            'create_time' => $user['create_time'],
-            'create_time_date' => $user['create_time_date'],
-            'login_time' => $user['login_time'],
-            'login_time_date' => $user['login_time_date'],
-            //用户组信息
-            'title' => $user['title'],
-            'admin_type' => $user['admin_type'],
-            'admin_rules' => $user['admin_rules'],
-            //商户信息
-            'merchant_name' => $user['merchant_name'],
-            'merchant_logo' => $user['merchant_logo'],
-            'merchant_banner' => $user['merchant_banner'],
+            'sex_data' => $user['sex_data'],
+            'id_card' => $user['id_card'],
+            'vip' => $user['vip'],
+            'vip_data' => $user['vip_data'],
+            'tags' => $user['tags'],
+            'birthday' => $user['birthday'],
+            'birthday_date' => $user['birthday_date'],
+            'province' => $user['province'],
+            'city' => $user['city'],
+            'area' => $user['area'],
+            'address' => $user['address'],
+            'lat' => $user['lat'],
+            'lng' => $user['lng'],
         ];
     }
 

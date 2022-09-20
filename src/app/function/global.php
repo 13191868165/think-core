@@ -166,3 +166,25 @@ function table($name, $type = 'mysql')
 {
     return empty($type) ? $name : config("database.connections.{$type}.prefix") . $name;
 }
+
+/**
+ * 检查路由
+ * @return void
+ */
+function checkRoute($list, $route) {
+    debug($list);
+    debug($route);
+    exit;
+    $result = false;
+//    foreach ($list as &$value) {
+//        if (!empty($value)) {
+//            $value = strtolower($value);
+//            $arr = explode('.', $value);
+//            //添加*通配符
+//            if ($arr[2] === '*' && $arr[1] === $this->controller) {
+//                $result = true;
+//                break;
+//            }
+//        }
+//    }
+}
