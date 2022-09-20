@@ -1,7 +1,5 @@
 <?php
 
-namespace app\controller;
-
 /**
  * 使用pre标签打印
  */
@@ -170,28 +168,23 @@ function table($name, $type = 'mysql')
 }
 
 /**
- * 检查白名单
- * @param $list
- * @param $method
- * @return bool
+ * 检查路由
+ * @return void
  */
-function checkWhitelist($list, $method)
-{
-    $method = explode('.', strtolower($method));
-
+function checkRoute($list, $route) {
+    debug($list);
+    debug($route);
+    exit;
     $result = false;
-    if (count($list) > 0) {
-        foreach ($list as &$value) {
-            $value = explode('.', strtolower($value));
-            if ($method[0] == $value[0]
-                && $method[1] == $value[1]
-                && ($method[2] == $value[2] || $value[2] === '*')) {
-                $result = true;
-                break;
-            }
-        }
-        unset($value);
-    }
-
-    return $result;
+//    foreach ($list as &$value) {
+//        if (!empty($value)) {
+//            $value = strtolower($value);
+//            $arr = explode('.', $value);
+//            //添加*通配符
+//            if ($arr[2] === '*' && $arr[1] === $this->controller) {
+//                $result = true;
+//                break;
+//            }
+//        }
+//    }
 }
