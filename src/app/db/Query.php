@@ -94,11 +94,40 @@ class Query extends \think\db\Query
             foreach ($type as $key => $args) {
                 $key = array_filter(explode(':', $key, 2)); //拆分新旧字段
                 $field = $key[0]; //字段名
+
                 if (is_string($args)) {
                     $args = [$args];
                 }
+
                 $name = $args[0]; //方法名
-                $args[0] = isset($data[$field]) ? $data[$field] : null; //字段值
+                if (
+                    $field &&
+                    ($name == 'isset' || ($name != 'isset' && isset($data[$field])))
+                ) {
+                    $args[0] = isset($data[$field]) ? $data[$field] : null; //字段值
+
+                    //移除只读字段
+                    if ($name == 'readonly' || $name == 'unset') {
+                        unset($data[$field]);
+                    } else {
+                        $value = call_user_func_array([$transform, $name], $args);
+
+                        if (!empty($key[1])) { //赋值新字段
+                            $data[$key[1]] = $value;
+                        } else { //覆盖字段值
+                            $data[$field] = $value;
+                        }
+                    }
+                }
+
+                /*
+                if (is_string($args)) {
+                    $args = [$args];
+                }
+
+                $name = $args[0]; //方法名
+
+                $args[0] =  isset($data[$field]) ? $data[$field] : null; //字段值
 
                 //移除只读字段
                 if ($name == 'readonly' || $name == 'unset') {
@@ -111,7 +140,7 @@ class Query extends \think\db\Query
                     } else { //覆盖字段值
                         $data[$field] = $value;
                     }
-                }
+                }*/
             }
         }
 
@@ -234,7 +263,6 @@ class Query extends \think\db\Query
      */
     public function save($data = [], $forceInsert = false)
     {
-
         $myModel = $this->myModel;
 
         //扩展 __PK__ __DELETETIME__
@@ -254,7 +282,7 @@ class Query extends \think\db\Query
             return $this->insert($data);
         }
 
-        $this->options['data'] = array_merge(isset($this->options['data']) ? $this->options['data'] : [], $data);
+        $this->options['data'] = array_merge($this->options['data'] ?? [], $data);
 
         if (!empty($this->options['where'])) {
             $isUpdate = true;
@@ -264,13 +292,16 @@ class Query extends \think\db\Query
 
         $before = 'beforeSave';
         if (!empty($myModel) && method_exists($myModel, $before)) {
-            $beforeResult = $myModel->$before($this->options['data'], isset($this->options['where']) ? $this->options['where'] : []);
+            $beforeResult = $myModel->$before(
+                $this->options['data'],
+                $this->options['where'] ?? []
+            );
             $this->options['data'] = $beforeResult[0] ?? [];
             $this->options['where'] = $beforeResult[1] ?? [];
         }
 
         if ($isUpdate) { //更新
-            $id = isset($data[$myModel->pk]) ? intval($data[$myModel->pk]) : 0;
+            $id = $data[$myModel->pk] ?? 0;
 
             // 只读字段不允许更新
             if (!empty($myModel->readonly)) {
@@ -422,7 +453,7 @@ class Query extends \think\db\Query
                             $prefix = $this->getConfig('prefix');
                             $moduleName = substr_replace($k, '', strpos($k, $prefix), strlen($prefix));
                             $joinList[$k] = f('Str')::camel($moduleName);
-                            if(class_exists(app_namespace('model', $joinList[$k])) == true) {
+                            if (class_exists(app_namespace('model', $joinList[$k])) == true) {
                                 $joinModel = m($joinList[$k]);
                                 foreach ($list as $key => $value) {
                                     if (method_exists($joinModel, $after)) {
@@ -659,5 +690,10 @@ class Query extends \think\db\Query
         $this->withSoftDelete(1, true);
 
         return parent::delete($data);
+    }
+
+    public function query($sql, $bind = [])
+    {
+        return f('Db')::query($sql, $bind);
     }
 }

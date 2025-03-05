@@ -3,10 +3,10 @@ namespace app\facade;
 
 use think\Facade;
 
-class Captcha extends Facade
+class Jwt extends Facade
 {
     protected static function getFacadeClass()
     {
-        return \app\util\Captcha::class;
+        return \app\util\Jwt::class;
     }
 }

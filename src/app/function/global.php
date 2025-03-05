@@ -167,6 +167,13 @@ function table($name, $type = 'mysql')
     return empty($type) ? $name : config("database.connections.{$type}.prefix") . $name;
 }
 
+function getRoute($method)
+{
+    $route = preg_replace(['/\/\//', '/\//', '/\.\./'], '.', trim($method, '/'));
+    $route = array_filter(explode('.', $route));
+    return $route;
+}
+
 /**
  * 检查路由
  * @return void

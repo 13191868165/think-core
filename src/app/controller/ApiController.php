@@ -27,18 +27,26 @@ abstract class ApiController extends BaseController
     protected function initialize()
     {
         $this->_initialize();
+        $data = input();
+        if (isset($data['method'])) {
+            $method = explode('.', $data['method']);
+
+            $fileName = count($method) == 2 ? strtolower($method[0]) : strtolower($method[1]);
+            $action = count($method) == 2 ? strtolower($method[1]) : strtolower($method[2]);
+            //不是上传文件 记录到日志中
+        }
     }
 
     /**
      * 校验用户访问token，成功则返回用户信息
      */
-    protected function checkToken($token)
+    public function checkSetUser($token)
     {
         if (empty($token)) {
             throw_exception(10209);
         }
 
-        $payload = u('Jwt')::decode($token);
+        $payload = f('Jwt')::decode($token);
         if ($payload === false || empty($payload->id) || empty($payload->login_time)) {
             throw_exception(10211);
         }
@@ -66,7 +74,7 @@ abstract class ApiController extends BaseController
             throw_exception(10208);
         }
 
-        return [
+        $this->user = [
             'id' => $user['id'],
             'level_id' => $user['level_id'],
             'category_id' => $user['category_id'],

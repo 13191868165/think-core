@@ -102,7 +102,7 @@ class Transform
      */
     public function intval($value, $default = 0)
     {
-        return !isset($value) ? intval($value) : $default;
+        return isset($value) ? intval($value) : $default;
     }
 
 
@@ -337,4 +337,57 @@ class Transform
         return f('Str')::getip();
     }
 
+    /**
+     * 获取枚举数据
+     * @param $value
+     * @param $enumeration
+     * @param $default
+     * @return mixed|string
+     */
+    public function getEnumData($value, $enumeration, $default = '')
+    {
+        return isset($enumeration[$value]) ? $enumeration[$value] : $default;
+    }
+
+    /**
+     * 存储时转图片数组格式
+     * @param $value
+     * @param $field
+     * @return false|string
+     */
+    public function toImage($value, $field = 'attachment')
+    {
+        $data = array_column($value, $field);
+        return $this->jsonEncode($data);
+    }
+
+    /**
+     * 查询时转媒体格式
+     * @param $value
+     * @param $complete
+     * @param $is_cahce
+     * @return array
+     * @throws \ReflectionException
+     */
+    public function toMedia($value, $complete = 1, $is_cahce = false)
+    {
+        $value = $this->jsonDecode($value);
+
+        $data = [];
+        if (is_array($value)) {
+            foreach ($value as $key => $val) {
+                $data[$key] = [
+                    'url' => m('attachment')->tomedia($val, $complete, $is_cahce),
+                    'attachment' => $val,
+                ];
+            }
+        } else {
+            $data = [
+                'url' => m('attachment')->tomedia($value, $complete, $is_cahce),
+                'attachment' => $value,
+            ];
+        }
+
+        return $data;
+    }
 }

@@ -3,10 +3,10 @@ namespace app\facade;
 
 use think\Facade;
 
-class Captcha extends Facade
+class Validate extends Facade
 {
     protected static function getFacadeClass()
     {
-        return \app\util\Captcha::class;
+        return \app\util\Validate::class;
     }
 }

@@ -63,7 +63,13 @@ class Sign
     {
         //数组排序
         ksort($param);
+
+        if (isset($param['_salt'])) {
+            unset($param['_salt']);
+        }
+
         $str = http_build_query($param);
+
         return md5(sha1($str) . $key);
     }
 }

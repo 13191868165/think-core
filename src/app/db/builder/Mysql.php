@@ -17,7 +17,7 @@ use think\db\Query;
 /**
  * mysql数据库驱动
  */
-class Mysql extends \think\db\builder\Mysql
+class mysql extends \think\db\builder\Mysql
 {
     /**
      * 字段和表名处理
