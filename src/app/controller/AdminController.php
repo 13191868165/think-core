@@ -21,7 +21,6 @@ abstract class AdminController extends BaseController
     protected function initialize()
     {
         $this->_initialize();
-        $this->checkAdminRules();
 
         $data = input();
 
@@ -127,7 +126,7 @@ abstract class AdminController extends BaseController
      * 检查管理员权限
      * @return void
      */
-    protected function checkAdminRules()
+    protected function checkRouteRule()
     {
         $debug = config("development.debug", []);
         if ($debug) {
@@ -136,15 +135,16 @@ abstract class AdminController extends BaseController
                 $routeName = 'undefined';
             }
             $routeData[$routeName] = $this->method;
-            $routes = new \app\util\Routes();
-            $routes->writeAdminPermission($routeData);
+            m('routes')->writeAdminPermission($routeData);
         }
 
         $admin_type = $this->user['admin_type'];
         $admin_rules = $this->user['admin_rules'];
         if ($admin_type != 1) {
+            //检查路由权限
+            $routes = '';
 
-            echo "-----------当前路由：";
+            /*echo "-----------当前路由：";
             debug($this->method);
             debug($this->api);
             debug($this->controller);
@@ -152,7 +152,7 @@ abstract class AdminController extends BaseController
             echo '-----------路由结束!';
 
             debug($this->user);
-            exit;
+            exit;*/
         }
     }
 }

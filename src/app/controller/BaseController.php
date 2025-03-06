@@ -205,7 +205,7 @@ abstract class BaseController
     {
         $api = $this->api;
 
-        // 校验app白名单
+        // 校验app白名单，如：微信校验api等
         if (checkWhitelist(config('app_whitelist', []), $this->method)) {
             return false;
         }
@@ -293,6 +293,14 @@ abstract class BaseController
     }
 
     /**
+     * 检查路由规则
+     * @return void
+     */
+    protected function checkRouteRule()
+    {
+    }
+
+    /**
      * 获取枚举数据
      * @return \think\response\Json|void
      * @throws \ReflectionException
@@ -351,5 +359,8 @@ abstract class BaseController
 
         // 检查token并设置用户信息
         $this->checkSetUser($token);
+
+        // 检查路由规则
+        $this->checkRouteRule();
     }
 }
