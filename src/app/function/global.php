@@ -222,5 +222,10 @@ function outlog()
     }
     $message[] = "\n";
     $message = join($message);
-    error_log($message, 3, runtime_path() . $file);
+    $path = runtime_path() . $file;
+    $dir = dirname($path);
+    if (!file_exists($dir)) {
+        @mkdir($dir, 0777, true);
+    }
+    error_log($message, 3, $path);
 }
