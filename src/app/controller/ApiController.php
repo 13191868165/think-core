@@ -61,7 +61,7 @@ abstract class ApiController extends BaseController
 
         //检查用户是否存在
         if (empty($user)) {
-            throw_exception(10204);
+            throw_exception(10206);
         }
 
         //是否在其它设备登录
@@ -81,25 +81,14 @@ abstract class ApiController extends BaseController
             'username' => $user['username'],
             'phone' => $user['phone'],
             'email' => $user['email'],
-            'credit1' => $user['credit1'],
-            'credit2' => $user['credit2'],
             'nickname' => $user['nickname'],
             'realname' => $user['realname'],
-            'avatar' => $user['avatar'],
-            'sex' => $user['sex'],
-            'sex_data' => $user['sex_data'],
-            'id_card' => $user['id_card'],
-            'vip' => $user['vip'],
-            'vip_data' => $user['vip_data'],
-            'tags' => $user['tags'],
-            'birthday' => $user['birthday'],
-            'birthday_date' => $user['birthday_date'],
-            'province' => $user['province'],
-            'city' => $user['city'],
-            'area' => $user['area'],
-            'address' => $user['address'],
-            'lat' => $user['lat'],
-            'lng' => $user['lng'],
+            'gender' => $user['gender'],
+            'status' => $user['status'],
+            'create_time' => $user['create_time'],
+            'create_time_date' => $user['create_time_date'],
+            'login_time' => $user['login_time'],
+            'login_time_date' => $user['login_time_date'],
         ];
     }
 

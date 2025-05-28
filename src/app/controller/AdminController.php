@@ -70,7 +70,20 @@ abstract class AdminController extends BaseController
 
         // 检查用户是否存在
         if (empty($user)) {
-            throw_exception(10204);
+            throw_exception(10206);
+        }
+
+        // 校验用户登录后静默时间
+        $stopTime = config("{$this->api}.stop_time");
+        $time = time();
+        $diffTime = $time - $user['login_time'];
+        if(!config('development.debug')) {
+            if (($stopTime - $diffTime) <= 0) {
+                $stopTime2 = intval($stopTime / 60);
+                throw_exception(10101, "用户{$stopTime2}分钟内无操作，系统自动退出");
+            } else if ($diffTime > 180) {
+                m('admin')->where(['id' => $user['id']])->save(['login_time' => $time]);
+            }
         }
 
         //设置管理员类型
@@ -115,44 +128,41 @@ abstract class AdminController extends BaseController
             'title' => $user['title'],
             'admin_type' => $user['admin_type'],
             'admin_rules' => $user['admin_rules'],
-            // 商户信息
-            'merchant_name' => $user['merchant_name'],
-            'merchant_logo' => $user['merchant_logo'],
-            'merchant_banner' => $user['merchant_banner'],
+
+            'province_id' => $user['province_id'],
+            'city_id' => $user['city_id'],
+            'area_id' => $user['area_id'],
+
+            // 机构信息
+            //'merchant_name' => $user['merchant_name'],
+            //'merchant_logo' => $user['merchant_logo'],
+            //'merchant_banner' => $user['merchant_banner'],
         ];
     }
 
     /**
      * 检查管理员权限
      * @return void
+     * @throws \ReflectionException
      */
     protected function checkRouteRule()
     {
-        $debug = config("development.debug", []);
-        if ($debug) {
-            $routeName = $this->request->header('x-route-name', 'undefined');
-            if (empty($routeName) || $routeName == 'undefined') {
-                $routeName = 'undefined';
-            }
-            $routeData[$routeName] = $this->method;
-            m('routes')->writeAdminPermission($routeData);
+        $routeName = $this->request->header('x-route-name', 'undefined');
+        if (empty($routeName) || $routeName == 'undefined') {
+            $routeName = 'undefined';
         }
 
-        $admin_type = $this->user['admin_type'];
-        $admin_rules = $this->user['admin_rules'];
-        if ($admin_type != 1) {
-            //检查路由权限
-            $routes = '';
+        if (env('APP_DEBUG', false) && config("development.debug", [])) {
+            $routeData[$routeName] = $this->method;
+            //开发模式写入管理员权限
+            m('routes')->writePermission($routeData);
+            //开发模式删除缓存文件
+            m('routes')->adminPermissionCache('delete', [], $this->user['admin_type']);
+        }
 
-            /*echo "-----------当前路由：";
-            debug($this->method);
-            debug($this->api);
-            debug($this->controller);
-            debug($this->action);
-            echo '-----------路由结束!';
-
-            debug($this->user);
-            exit;*/
+        $checkRouteByUser = m('routes')->setUser($this->user)->checkRouteByUser($this->method);
+        if (!$checkRouteByUser) {
+            throw_exception(10214);
         }
     }
 }

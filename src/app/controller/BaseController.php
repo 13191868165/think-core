@@ -115,6 +115,27 @@ abstract class BaseController
     }
 
     /**
+     * 模板视图
+     * @param $template
+     * @param $vars
+     * @param $code
+     * @param $filter
+     * @return void
+     */
+    protected function view($template = '', $vars = [], $code = 200, $filter = null)
+    {
+        if (is_array($template)) {
+            $template = join('/', $template);
+        } else {
+            if (!empty($template)) {
+                $template = "{$this->api}/{$template}";
+            }
+        }
+
+        return view($template, $vars, $code, $filter);
+    }
+
+    /**
      * 初始化路由
      * @param $route
      * @return void
@@ -182,6 +203,10 @@ abstract class BaseController
         $loginWhitelist = $whitelist['login_whitelist'][$this->api] ?? [];
         // 绑定登录白名单
         set_config($loginWhitelist, 'login_whitelist', true);
+
+        $requestWhitelist = $whitelist['request_whitelist'][$this->api] ?? [];
+        // 绑定请求白名单
+        set_config($requestWhitelist, 'request_whitelist', true);
     }
 
     /**
@@ -217,10 +242,16 @@ abstract class BaseController
         } else {
             $appid = $this->request->header('x-access-appid', '');
             $requestType = 0;
+
+            if (checkWhitelist(config('request_whitelist', []), $this->method) == true) {
+                if (!empty(input('appid'))) {
+                    $appid = input('appid');
+                }
+            }
         }
 
         // 检查是否开启调试模式
-        if (empty($appid)) {
+        if (env('APP_DEBUG', false) && empty($appid)) {
             $dev = config("development", []);
             if (
                 $dev['debug'] == true &&
@@ -280,10 +311,13 @@ abstract class BaseController
         $dev = config('development');
         if (!($this->isDev == true && $dev['check_sign'] == false)) {
             $input = input();
-            //处理上传功能验签
-            if ($this->api == 'admin' && $this->controller == 'Upload') {
-                unset($input['file']);
+            if ($this->api == 'admin') {
+                //处理上传功能验签
+                if ($this->controller == 'Upload') {
+                    unset($input['file']);
+                }
             }
+
             if (f('Sign')::checkSign($input, $appInfo['secret']) != true) {
                 throw_exception(10104);
             }
@@ -316,7 +350,7 @@ abstract class BaseController
         $result = [];
         foreach ($data as $key => $value) {
             if (class_exists(app_namespace('model', $key)) == true) {
-                $enumeration = m($key)->enumeration;
+                $enumeration = method_exists(app_namespace('model', $key), '_enumeration') ? m($key)->_enumeration(['user' => $this->user]) : m($key)->enumeration;
                 if (!empty($enumeration)) {
                     foreach ($value as $val) {
                         $result[$key][$val] = isset($enumeration[$val]) ? $enumeration[$val] : null;
@@ -352,6 +386,12 @@ abstract class BaseController
         } else {
             if ($this->appInfo['request_type'] === 0) {
                 $token = $this->request->header('x-access-token', '');
+
+                if (checkWhitelist(config('request_whitelist', []), $this->method) == true) {
+                    if (!empty(input('appid'))) {
+                        $token = input('token');
+                    }
+                }
             } else {
                 $token = input('token', '');
             }
