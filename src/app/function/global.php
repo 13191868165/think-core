@@ -203,6 +203,11 @@ function checkWhitelist($list, $method)
 }
 
 /**
+ * 用"|"分割参数
+ * 第一个是路径
+ * 第二个是否写入时间 0不写入 1写入
+ * 第三个是否完整路径 0否 1是
+ * 第四个参数 是否覆盖数据 0否 1覆盖
  * 输出日志
  * @return void
  */
@@ -211,21 +216,45 @@ function outlog()
     $args = func_get_args();
     $file = array_pop($args);
 
+    $fileArr = explode('|', $file);
     $time = date('Y-m-d H:i:s');
-    $message = ["时间：{$time}，内容：\n"];
+    $message = [];
+
+    if (count($fileArr) > 1) {
+
+        $type = $fileArr[1];
+        $file = $fileArr[0];
+
+        if ($type == 1) {
+            $message[] = "时间：{$time}，内容：\n";
+        }
+    } else {
+        $message[] = "时间：{$time}，内容：\n";
+    }
+
     if (count($args) > 0) {
         foreach ($args as $value) {
             $message[] = (is_array($value) || is_object($value))
-                ? var_export($value, TRUE)
+                ? @var_export($value, TRUE)
                 : $value;
         }
     }
     $message[] = "\n";
     $message = join($message);
-    $path = runtime_path() . $file;
+    $path = isset($fileArr[2]) && $fileArr[2] == 1 ? $file : runtime_path() . $file;
     $dir = dirname($path);
     if (!file_exists($dir)) {
         @mkdir($dir, 0777, true);
     }
-    error_log($message, 3, $path);
+
+    if (count($fileArr) > 1) {
+        if (isset($fileArr[3]) && $fileArr[3] == 1) {
+            @file_put_contents($path, $message, FILE_APPEND);
+        } else {
+            @file_put_contents($path, $message);
+        }
+    } else {
+        error_log($message, 3, $path);
+    }
+
 }
