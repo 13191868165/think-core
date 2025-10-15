@@ -34,12 +34,12 @@ abstract class AdminController extends BaseController
                 $params['info'] = "操作人信息:{$user['username']},ID:{$user['id']}";
             }
             if ($fileName == 'admin' && $action == 'login') {
-                $params = ['username' => $data['username'], 'IP' => $_SERVER['REMOTE_ADDR']];
+                $params = ['username' => isset($data['username']) ? trim($data['username']) : '', 'IP' => $_SERVER['REMOTE_ADDR']];
             } else {
                 $params['data'] = json_encode($data, JSON_UNESCAPED_UNICODE);
             }
-            $filePath = root_path() . 'runtime/' . $fileName . '/' . date('Ymd') . '/' . $action . '.log';
-            outlog2($params, $filePath, 'detail');
+            $filePath = $fileName . 'Log/' . date('Ymd') . '/' . $this->controller . '_' . $action . '.log';
+            outlog($params, $filePath . '|1|0|1');
         }
     }
 
@@ -77,7 +77,7 @@ abstract class AdminController extends BaseController
         $stopTime = config("{$this->api}.stop_time");
         $time = time();
         $diffTime = $time - $user['login_time'];
-        if(!config('development.debug')) {
+        if (!config('development.debug')) {
             if (($stopTime - $diffTime) <= 0) {
                 $stopTime2 = intval($stopTime / 60);
                 throw_exception(10101, "用户{$stopTime2}分钟内无操作，系统自动退出");
@@ -133,10 +133,7 @@ abstract class AdminController extends BaseController
             'city_id' => $user['city_id'],
             'area_id' => $user['area_id'],
 
-            // 机构信息
-            //'merchant_name' => $user['merchant_name'],
-            //'merchant_logo' => $user['merchant_logo'],
-            //'merchant_banner' => $user['merchant_banner'],
+            'is_reset' => $user['is_reset'], //是否强制重置密码
         ];
     }
 
